@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   Button,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
 } from 'react-native';
 
 import Card from '../components/Card';
@@ -15,6 +15,7 @@ import NumberContainer from '../components/NumberContainer';
 import BodyText from '../components/BodyText';
 import TitleText from '../components/TitleText';
 import Colors from '../constants/colors';
+import MainButton from '../components/MainButton';
 
 const StartGameScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
@@ -36,7 +37,7 @@ const StartGameScreen = props => {
       Alert.alert(
         'Invalid number!',
         'Number has to be a number between 1 and 99.',
-        [{ text: 'Okay', style: 'destructive', onPress: resetInputHandler }]
+        [{text: 'Okay', style: 'destructive', onPress: resetInputHandler}],
       );
       return;
     }
@@ -53,10 +54,9 @@ const StartGameScreen = props => {
       <Card style={styles.summaryContainer}>
         <BodyText>You selected</BodyText>
         <NumberContainer>{selectedNumber}</NumberContainer>
-        <Button
-          title="START GAME"
-          onPress={() => props.onStartGame(selectedNumber)}
-        />
+        <MainButton onPress={() => props.onStartGame(selectedNumber)}>
+          Start Game
+        </MainButton>
       </Card>
     );
   }
@@ -65,8 +65,7 @@ const StartGameScreen = props => {
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();
-      }}
-    >
+      }}>
       <View style={styles.screen}>
         <TitleText style={styles.title}>Start a New Game!</TitleText>
         <Card style={styles.inputContainer}>
@@ -108,35 +107,36 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   title: {
     fontSize: 20,
     marginVertical: 10,
-    fontFamily: 'open-sans-bold'
+    fontFamily: 'open-sans-bold',
   },
   inputContainer: {
     width: 300,
     maxWidth: '80%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   button: {
-    width: 100
+    width: 100,
   },
   input: {
     width: 50,
-    textAlign: 'center'
+    textAlign: 'center',
+    height: 40,
   },
   summaryContainer: {
     marginTop: 20,
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 export default StartGameScreen;

@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, Image } from 'react-native';
+import {View, Text, StyleSheet, Button, Image} from 'react-native';
 
 import BodyText from '../components/BodyText';
 import TitleText from '../components/TitleText';
+import Color from '../constants/colors';
+import MainButton from '../components/MainButton';
 
 const GameOverScreen = props => {
   return (
@@ -12,16 +14,21 @@ const GameOverScreen = props => {
         <Image
           // source={require('../assets/success.png')}
           source={{
-            uri:
-              'https://cdn.pixabay.com/photo/2016/05/05/23/52/mountain-summit-1375015_960_720.jpg'
+            uri: 'https://cdn.pixabay.com/photo/2016/05/05/23/52/mountain-summit-1375015_960_720.jpg',
           }}
           style={styles.image}
           resizeMode="cover"
         />
       </View>
-      <BodyText>Number of rounds: {props.roundsNumber}</BodyText>
-      <BodyText>Number was: {props.userNumber}</BodyText>
-      <Button title="NEW GAME" onPress={props.onRestart} />
+      <View style={styles.resultContainer}>
+        <BodyText style={styles.resultText}>
+          Your Phone needed:
+          <Text style={styles.highLight}>{props.roundsNumber}</Text>
+          Round to guess the number:{' '}
+          <Text style={styles.highLight}>{props.userNumber}</Text>
+        </BodyText>
+      </View>
+      <MainButton onPress={props.onRestart}>New Game</MainButton>
     </View>
   );
 };
@@ -30,7 +37,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   imageContainer: {
     width: 300,
@@ -39,12 +46,23 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'black',
     overflow: 'hidden',
-    marginVertical: 30
+    marginVertical: 30,
   },
   image: {
     width: '100%',
-    height: '100%'
-  }
+    height: '100%',
+  },
+  highLight: {
+    color: Color.primary,
+  },
+  resultContainer: {
+    marginHorizontal: 45,
+    marginVertical: 15,
+  },
+  resultText: {
+    textAlign: 'center',
+    fontSize: 20,
+  },
 });
 
 export default GameOverScreen;
