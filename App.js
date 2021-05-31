@@ -9,7 +9,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import * as Font from 'expo-font';
 
 import Header from './components/Header';
 import StartGameScreen from './screens/StartGameScreen';
