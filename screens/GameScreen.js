@@ -1,5 +1,13 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View, Text, StyleSheet, Button, Alert, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Alert,
+  ScrollView,
+  FlatList,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import NumberContainer from '../components/NumberContainer';
@@ -19,17 +27,17 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
-const renderItem = (value, roundOfNumber) => (
-  <View key={value} style={styles.listItem}>
-    <BodyText>#{roundOfNumber}</BodyText>
-    <BodyText>{value}</BodyText>
+const renderItem = (listLength, itemData) => (
+  <View style={styles.listItem}>
+    <BodyText>#{listLength - itemData.index}</BodyText>
+    <BodyText>{itemData.item}</BodyText>
   </View>
 );
 
 const GameScreen = props => {
   const initGuess = generateRandomBetween(1, 100, props.userChoice);
   const [currentGuess, setCurrentGuess] = useState(initGuess);
-  const [postGuess, setPostGuess] = useState([initGuess]);
+  const [postGuess, setPostGuess] = useState([initGuess.toString()]);
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
@@ -62,7 +70,7 @@ const GameScreen = props => {
       currentGuess,
     );
     setCurrentGuess(nextNumber);
-    setPostGuess(cureentGuess => [nextNumber, ...cureentGuess]);
+    setPostGuess(cureentGuess => [nextNumber.toString(), ...cureentGuess]);
   };
 
   return (
@@ -78,11 +86,12 @@ const GameScreen = props => {
         </MainButton>
       </Card>
       <View style={styles.listContainer}>
-        <ScrollView contentContainerStyle={styles.list}>
-          {postGuess.map((guess, index) =>
-            renderItem(guess, postGuess.length - index),
-          )}
-        </ScrollView>
+        <FlatList
+          data={postGuess}
+          keyExtractor={item => item}
+          renderItem={renderItem.bind(this, postGuess.length)}
+          contentContainerStyle={styles.list}
+        />
       </View>
     </View>
   );
@@ -103,11 +112,10 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    width: '80%',
+    width: '60%',
   },
   list: {
     flexGrow: 1,
-    alignItems: 'center',
     justifyContent: 'flex-end',
   },
   listItem: {
@@ -117,7 +125,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
+    width: '100%',
   },
 });
 
