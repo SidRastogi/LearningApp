@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
   FlatList,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -38,6 +39,12 @@ const GameScreen = props => {
   const initGuess = generateRandomBetween(1, 100, props.userChoice);
   const [currentGuess, setCurrentGuess] = useState(initGuess);
   const [postGuess, setPostGuess] = useState([initGuess.toString()]);
+  const [avilableDeviceWidth, setAvilableDeviceWidth] = useState(
+    Dimensions.get('window').width,
+  );
+  const [avilableDeviceHeight, setAvilableDeviceHeight] = useState(
+    Dimensions.get('window').height,
+  );
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
@@ -48,6 +55,17 @@ const GameScreen = props => {
       onGameOver(postGuess.length);
     }
   }, [currentGuess, userChoice, onGameOver]);
+
+  useEffect(() => {
+    const update = () => {
+      setAvilableDeviceWidth(Dimensions.get('window').width);
+      setAvilableDeviceHeight(Dimensions.get('window').height);
+    };
+    Dimensions.addEventListener('change', update);
+    return () => {
+      Dimensions.removeEventListener('change', update);
+    };
+  });
 
   const nextGuessHandler = direction => {
     if (
@@ -73,11 +91,42 @@ const GameScreen = props => {
     setPostGuess(cureentGuess => [nextNumber.toString(), ...cureentGuess]);
   };
 
+  let listContainerStyles = styles.listContainer;
+
+  if (avilableDeviceWidth < 350) {
+    listContainerStyles = styles.listContainerBig;
+  }
+
+  if (avilableDeviceHeight < 500) {
+    return (
+      <View style={styles.screen}>
+        <Text style={DefaultStyles.title}>Opponent's Guess</Text>
+        <View style={styles.control}>
+          <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
+            <Icon name="remove" size={20} />
+          </MainButton>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
+            <Icon name="add" size={20} />
+          </MainButton>
+        </View>
+        <View style={listContainerStyles}>
+          <FlatList
+            data={postGuess}
+            keyExtractor={item => item}
+            renderItem={renderItem.bind(this, postGuess.length)}
+            contentContainerStyle={styles.list}
+          />
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <Text style={DefaultStyles.title}>Opponent's Guess</Text>
       <NumberContainer>{currentGuess}</NumberContainer>
-      <Card style={styles.buttonContainer}>
+      <Card style={{...styles.buttonContainer, marginTop: avilableDeviceHeight > 600 ? 20 : 5}}>
         <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
           <Icon name="remove" size={20} />
         </MainButton>
@@ -85,7 +134,7 @@ const GameScreen = props => {
           <Icon name="add" size={20} />
         </MainButton>
       </Card>
-      <View style={styles.listContainer}>
+      <View style={listContainerStyles}>
         <FlatList
           data={postGuess}
           keyExtractor={item => item}
@@ -103,16 +152,27 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
   },
+  control: {
+    flex: 1,
+    flexDirection: 'row',
+    width: '60%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
-    width: 300,
+    width: 400,
     maxWidth: '80%',
   },
+
   listContainer: {
     flex: 1,
     width: '60%',
+  },
+  listContainerBig: {
+    flex: 1,
+    width: '80%',
   },
   list: {
     flexGrow: 1,
